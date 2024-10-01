@@ -2,8 +2,10 @@ package com.example.moodie.configuration.websocket;
 import com.example.moodie.exception.AppRuntimeException;
 import com.example.moodie.util.constant.ExceptionType;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
@@ -12,33 +14,46 @@ import java.util.Map;
 public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                   WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        if (request instanceof HttpServletRequest) {
-            HttpServletRequest servletRequest = (HttpServletRequest) request;
-            String jwt = servletRequest.getHeader("Authorization");
-
-            if (jwt != null && jwt.startsWith("Bearer ")) {
-                jwt = jwt.substring(7); // Bỏ tiền tố "Bearer " để lấy JWT
-                // Trích xuất thông tin từ JWT (giả sử có sẵn hàm extractUserInfoFromJwt)
-                String userInfo = extractUserInfoFromJwt(jwt);
-
-                // In thông tin người dùng ra console
-                System.out.println("User connected with info: " + userInfo);
-
-                // Lưu thông tin user vào attributes nếu cần thiết
-                attributes.put("userInfo", userInfo);
-            } else {
-                throw new AppRuntimeException(ExceptionType.AUTHENTICATION_ERROR);
-            }
-        }
+    public boolean beforeHandshake(
+            ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Map<String, Object> attributes) throws Exception {
+            System.out.println("beforeHandshake");
+            String authToken = request.getHeaders().getFirst("Authorization");
+            System.out.println(authToken);//
+//        String token = request.getServletRequest().getParameter("token");
+//        if (request instanceof ServletServerHttpRequest) {
+//            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+//            String token = servletRequest.getServletRequest().getParameter("token");
+//            System.out.println("Token from query param: " + token);
+//             Xử lý token ở đây
+//        }
+//
+//        request.getHeaders().forEach((key, value) -> System.out.println(key + ": " + value));
+//            System.out.println("h 1");
         return true;
-    }
 
+//
+//        // Lấy JWT từ header
+//        String authToken = request.getHeaders().getFirst("Authorization");
+//        System.out.println(authToken);
+//
+//        if (authToken != null) {
+//            // Nếu token hợp lệ, có thể lưu thông tin người dùng vào attributes
+//            // attributes.put("user", userDetails);
+//            System.out.println("ok");
+//            return true; // Tiếp tục quá trình bắt tay
+//        }
+//        System.out.println("h 2");
+//
+////        throw new AppRuntimeException(ExceptionType.AUTHENTICATION_ERROR);
+//        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+//        return false; // Ngăn kết nối
+    }
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                WebSocketHandler wsHandler, Exception exception) {
         // Do nothing after handshake
+
     }
 
     private String extractUserInfoFromJwt(String jwt) {

@@ -44,9 +44,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AppRuntimeException.class)
     ResponseEntity<AppResponse<Object>> handlingValidationException(AppRuntimeException exception) {
 
+        System.out.println(exception.getMessage());
 
-        return new ResponseEntity<AppResponse<Object>>(new AppResponse<>(HttpStatus.BAD_REQUEST.value(), ApiMessage.FAILED,
-                new ErrorResponse(exception.getErrorCode(), exception.getErrorMessage())), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<AppResponse<Object>>(new AppResponse<>(exception.getHttpStatus().value(), ApiMessage.FAILED,
+                new ErrorResponse(exception.getErrorCode(), exception.getErrorMessage())), exception.getHttpStatus());
     }
 
     // Handler cho EntityNotFoundException (khi không tìm thấy entity)
