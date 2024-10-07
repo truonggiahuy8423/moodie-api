@@ -22,12 +22,12 @@ public class RolePermission {
     @JsonIgnore
     @ManyToOne
     @MapsId("permissionId")
-    @JoinColumn(name = "permission_id", insertable = false, updatable = false)
+    @JoinColumn(name = "permission_id", referencedColumnName = "permission_id")
     private Permission permission;
 
     @JsonIgnore
     @ManyToOne
     @MapsId("roleId")
-    @JoinColumn(name = "role_id", insertable = false, updatable = false)
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private Role role;
 }

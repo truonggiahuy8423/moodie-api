@@ -21,12 +21,12 @@ public class RoleUser {
     @JsonIgnore
     @ManyToOne
     @MapsId("userId")
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
     @JsonIgnore
     @ManyToOne
     @MapsId("roleId")
-    @JoinColumn(name = "role_id", insertable = false, updatable = false)
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private Role role;
 }

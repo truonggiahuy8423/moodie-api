@@ -30,4 +30,5 @@ public class Role {
     @JsonIgnore
     @OneToMany(mappedBy = "role")
     private List<RolePermission> permissions;
+
 }

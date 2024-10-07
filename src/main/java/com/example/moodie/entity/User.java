@@ -3,9 +3,11 @@ package com.example.moodie.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -34,18 +36,22 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "created_date", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
+    @Column(name = "created_date", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
-    @Column(name = "updated_date", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedDate;
+    @Column(name = "updated_date", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime updatedDate;
+
+    @Column(name = "last_access", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime lastAccess;
 
     @Column(name = "gender")
     private Boolean gender; // Female true - Male fale
 
-    @Column(name = "date_of_birth", columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "date_of_birth")
     private LocalDate dob;
 
     @Column(name = "country_code", length = 2)
@@ -63,6 +69,37 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<PermissionUser> permissions;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<File> files;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<CourseRoomMessage> courseRoomMessages;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "sender")
+    private List<PrivateMessage> sentPrivateMessage;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiver")
+    private List<PrivateMessage> receivedPrivateMessage;
+
+    @OneToOne
+    @JoinColumn(name = "administrator_id", referencedColumnName = "administrator_id")
+    private Administrator administrator;
+
+    @OneToOne
+    @JoinColumn(name = "student_id", referencedColumnName = "student_id")
+    private Student student;
+
+    @OneToOne
+    @JoinColumn(name = "lecturer_id", referencedColumnName = "lecturer_id")
+    private Lecturer lecturer;
+
+
+
 
 }
 
